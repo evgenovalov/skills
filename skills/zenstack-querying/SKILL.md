@@ -191,7 +191,7 @@ computedFields: {
   Request it explicitly via `select`/`include`.
 - `args` is **plain data, never a callback**, so it serializes — a frontend can drive the query
   through the automatic CRUD service and it stays one policy-checked statement.
-- Each site takes the args in a fixed shape:
+- **Every** site that accepts the field takes `args`, each in a fixed shape:
 
 | Site | Shape |
 | ---- | ----- |
@@ -201,6 +201,8 @@ computedFields: {
 | `aggregate` | `_sum: { recentPostCount: { args: { since } } }` |
 | `groupBy` → `by` | `[{ field: 'recentPostCount', args: { since } }]` |
 
+- `distinct` and `omit` have no `args` slot, so they **reject** a parameterized field — as does
+  `groupBy` → `by` given the bare field name instead of the keyed `{ field, args }` entry.
 - Grouping **by** a computed field implemented as a *correlated subquery* follows the database's own
   rule for correlated `GROUP BY`: PostgreSQL rejects it, SQLite allows it. Row-local expressions
   group everywhere.

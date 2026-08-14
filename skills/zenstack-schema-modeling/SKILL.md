@@ -300,8 +300,10 @@ model User {
 ```
 
 - Parameter types are ZModel scalars, mapped to TS in the implementation (`DateTime` → `Date`).
-- A parameterized field is **never returned by default** — callers must supply `args` through
-  `select`/`include`, so it cannot be used where arguments can't be given.
+- **Every** use site must carry `args` — `select`/`include`, `where`/`having`, `orderBy`,
+  `aggregate`, and `groupBy` → `by` (`zenstack-querying` has the shapes). The field is therefore
+  **not returned by default**: request it via `select`/`include` to get its value back.
+- The sites with no `args` slot — `distinct` and `omit` — **reject** a parameterized field.
 
 ## ZModel additions over Prisma
 
