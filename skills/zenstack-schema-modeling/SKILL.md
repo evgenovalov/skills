@@ -285,6 +285,24 @@ const db = new ZenStackClient(schema, {
 });
 ```
 
+### Parameterized computed fields (v3.9.0+)
+
+Declare typed parameters after the field name to compute a value that depends on a runtime argument.
+The implementation takes them as a third callback parameter and callers pass them at query time —
+both in `zenstack-querying`.
+
+```zmodel
+model User {
+    id    Int    @id
+    posts Post[]
+    recentPostCount(since: DateTime) Int @computed
+}
+```
+
+- Parameter types are ZModel scalars, mapped to TS in the implementation (`DateTime` → `Date`).
+- A parameterized field is **never returned by default** — callers must supply `args` through
+  `select`/`include`, so it cannot be used where arguments can't be given.
+
 ## ZModel additions over Prisma
 
 - No `generator` block (use `zen generate` + `plugin`s).
